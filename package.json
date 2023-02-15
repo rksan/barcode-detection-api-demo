@@ -13,7 +13,9 @@
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.3",
     "bootstrap-vue-next": "^0.7.3",
+    "comlink": "^4.4.1",
     "core-js": "^3.8.3",
+    "quagga": "^0.12.1",
     "vue": "^3.2.13"
   },
   "devDependencies": {
