@@ -1,5 +1,5 @@
 <template>
-  <div v-if="checkBrowser">
+  <div v-if="!checkBrowser">
     <p>Barcode Detector はこのブラウザーでは対応していません。</p>
     <p>
       <b-link
@@ -27,6 +27,9 @@ import BarcodeDetector from "barcode-detector";
 
 // polyfill unless already supported
 if (!("BarcodeDetector" in window)) {
+  console.warn(
+    "[Warn] use Polyfill BardoceDetecotr. @ref : https://www.npmjs.com/package/barcode-detector"
+  );
   window.BarcodeDetector = BarcodeDetector;
 }
 
@@ -46,7 +49,7 @@ export default {
       return window.navigator.userAgent;
     },
     checkBrowser() {
-      return "BarcodeDetector" in window;
+      return "BarcodeDetector" in window.globalThis;
     },
   },
 
@@ -56,12 +59,12 @@ export default {
     },
     doStart() {
       // 新しい検出器を生成
-      var barcodeDetector = new BarcodeDetector({
+      /* var barcodeDetector = new BarcodeDetector({
         formats: ["code_39", "codabar", "ean_13"],
-      });
+      }); */
 
       // 対応している型をチェック
-      barcodeDetector.getSupportedFormats().then((supportedFormats) => {
+      BarcodeDetector.getSupportedFormats().then((supportedFormats) => {
         supportedFormats.forEach((format) => this.console(format));
       });
     },
