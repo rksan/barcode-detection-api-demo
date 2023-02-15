@@ -30,7 +30,7 @@ if (!("BarcodeDetector" in window)) {
   console.warn(
     "[Warn] use Polyfill BardoceDetecotr. @ref : https://www.npmjs.com/package/barcode-detector"
   );
-  window.BarcodeDetector = BarcodeDetector;
+  //window.BarcodeDetector = BarcodeDetector;
 }
 
 export default {
@@ -49,7 +49,7 @@ export default {
       return window.navigator.userAgent;
     },
     checkBrowser() {
-      return "BarcodeDetector" in window.globalThis;
+      return "BarcodeDetector" in window;
     },
   },
 
