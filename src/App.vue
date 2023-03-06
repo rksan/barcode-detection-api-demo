@@ -1,27 +1,28 @@
 <template>
-  <PInputForm />
+  <PHome theme="dark" />
 </template>
 
 <script>
-import PInputForm from "@/components/pages/PInputForm";
+import PHome from "@/components/pages/Home";
 
 export default {
   name: "App",
   components: {
-    PInputForm,
+    PHome,
   },
 };
 </script>
 
 <style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: calc(100vw - calc(100vw - 100%));
+  height: calc(100vh - calc(100vh - 100%));
+}
 #app {
   width: 100%;
   height: 100%;
-  /* font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px; */
 }
 </style>

@@ -1,14 +1,41 @@
 import config from "./config";
 
 export default {
-  name: "p-input-form",
+  name: "o-input-form",
+
+  props: {
+    theme: {
+      type: String,
+      default() {
+        return "light";
+      },
+    },
+  },
+
+  computed: {
+    compTheme() {
+      if (this.theme === "light") {
+        return ["bg-light", "text-dark"].join(" ");
+      } else {
+        return ["bg-dark", "text-light"].join(" ");
+      }
+    },
+    compAnime() {
+      if (this.anime) {
+        return ["anime"].join(" ");
+      }
+      return "";
+    },
+  },
 
   data() {
     return {
       model: {
+        imageURL: "",
         gallery: [{ code: "", imageURL: "", result: null, checker: null }],
         dspResult: "",
       },
+      anime: false,
     };
   },
 
@@ -130,6 +157,10 @@ export default {
       this.model.gallery.push({ code, imageURL, result, checker });
     },
 
+    doAnimationEnd() {
+      this.anime = false;
+    },
+
     doRsult(event) {
       let elem = event.currentTarget;
       var idx = elem.dataset.resultIndex;
@@ -207,15 +238,18 @@ export default {
             /* this.model.code = code;
             this.model.imageURL = canvas.toDataURL(); */
 
+            this.model.imageURL = canvas.toDataURL();
+
             this.addGallary({
               code: code,
-              imageURL: canvas.toDataURL(),
+              imageURL: this.model.imageURL,
               result,
               checker: this.getCodeChecker(),
             });
 
-            //this.doStop();
+            this.doStop();
             this.resetCodeChecker();
+            this.anime = true;
           }
         }
       }

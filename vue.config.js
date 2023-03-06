@@ -13,6 +13,7 @@ module.exports = defineConfig({
       }),
     ],
   },
+
   chainWebpack: (config) =>
     config.plugin("feature-flags").use(webpack.DefinePlugin, [
       {
