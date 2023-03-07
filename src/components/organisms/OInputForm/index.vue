@@ -269,6 +269,7 @@ export default scripts;
   .viewport {
     width: calc(100vw - calc(100vw - 100%));
     height: auto;
+    aspect-ratio: 9/16;
   }
 }
 
