@@ -11,7 +11,7 @@ export default scripts;
 
     <section class="content grid-item-main">
       <div class="camera" :class="[compCameraTheme, compCameraFull].join(' ')">
-        <div id="interactive" class="viewport">
+        <div id="interactive" class="viewport" :class="compViewportShow">
           <span>{{ videoInfo }}</span>
         </div>
         <div class="fixed-bottom">
@@ -234,11 +234,15 @@ export default scripts;
   padding: 0.5em;
 }
 .camera {
+  overflow: hidden;
+  max-width: 100vw;
   width: 100%;
   height: 100%;
 }
 .camera-full {
   position: absolute;
+  margin: 0;
+  padding: 0;
   top: 0;
   left: 0;
 }
@@ -253,24 +257,16 @@ export default scripts;
 }
 
 .viewport {
-  border: 1px dotted white;
-
+  /* border: 1px dotted white;
+ */
   position: relative;
   display: inline-block;
   max-width: 100%;
   max-height: 100%;
   width: auto;
-  height: calc(100vh - calc(100vh - 100%));
+  /* height: calc(100vh - calc(100vh - 100%)); */
+  height: 100%;
   aspect-ratio: 16/9;
-}
-
-/* height > width */
-@media (orientation: portrait) {
-  .viewport {
-    width: calc(100vw - calc(100vw - 100%));
-    height: auto;
-    aspect-ratio: 9/16;
-  }
 }
 
 .viewport > span {
@@ -291,7 +287,17 @@ export default scripts;
   right: 0;
 
   width: 100%;
-  height: 100%;
+  /*height: 100%;*/
+}
+
+/* height > width */
+@media (orientation: portrait) {
+  .viewport {
+    /* width: calc(100vw - calc(100vw - 100%)); */
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9/16;
+  }
 }
 
 .viewport > video {

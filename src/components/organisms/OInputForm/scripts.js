@@ -16,6 +16,9 @@ export default {
     compCameraFull() {
       return this.camera ? ["camera-full"].join(" ") : "";
     },
+    compViewportShow() {
+      return this.camera ? "" : "d-none";
+    },
     compTheme() {
       if (this.theme === "light") {
         return ["bg-light", "text-dark"].join(" ");
@@ -25,9 +28,9 @@ export default {
     },
     compCameraTheme() {
       if (this.theme === "light") {
-        return ["camera-demo-light"].join(" ");
+        return ["bg-light", "camera-demo-light"].join(" ");
       } else {
-        return ["camera-demo-dark"].join(" ");
+        return ["bg-dark", "camera-demo-dark"].join(" ");
       }
     },
     compAnime() {
