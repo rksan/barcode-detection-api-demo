@@ -4,9 +4,16 @@ export default {
     type: "LiveStream",
     target: "#interactive.viewport",
 
-    constraints: {
+    /* constraints: {
       width: 1280,
       height: 720,
+      facingMode: "environment",
+      // deviceId: "7832475934759384534",
+    }, */
+
+    constraints: {
+      width: { min: 1280, ideal: 1920, max: 2560 },
+      height: { min: 720, ideal: 1080, max: 1440 },
       facingMode: "environment",
       // deviceId: "7832475934759384534",
     },

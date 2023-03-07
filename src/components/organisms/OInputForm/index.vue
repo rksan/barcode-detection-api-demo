@@ -16,7 +16,7 @@ export default scripts;
       </button>
     </section>
 
-    <section class="content grid-item-main camera-demo">
+    <section class="content grid-item-main" :class="compCameraTheme">
       <div id="interactive" class="viewport"></div>
     </section>
   </div>
@@ -228,12 +228,19 @@ export default scripts;
   padding: 0.5em;
 }
 
-.camera-demo {
+.camera-demo-light {
   background-image: radial-gradient(circle, #000 1px, rgba(0, 0, 0, 0) 1px);
   background-size: 1rem 1rem;
 }
 
+.camera-demo-dark {
+  background-image: radial-gradient(circle, #fff 1px, rgba(0, 0, 0, 0) 1px);
+  background-size: 1rem 1rem;
+}
+
 .viewport {
+  border: 1px dotted white;
+
   position: relative;
   display: inline-block;
   max-width: 100%;

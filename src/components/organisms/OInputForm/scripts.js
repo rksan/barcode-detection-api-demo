@@ -20,6 +20,13 @@ export default {
         return ["bg-dark", "text-light"].join(" ");
       }
     },
+    compCameraTheme() {
+      if (this.theme === "light") {
+        return ["camera-demo-light"].join(" ");
+      } else {
+        return ["camera-demo-dark"].join(" ");
+      }
+    },
     compAnime() {
       if (this.anime) {
         return ["anime"].join(" ");
