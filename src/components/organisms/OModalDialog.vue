@@ -6,6 +6,7 @@
           <h5 class="modal-title">{{ title }}</h5>
           <button
             class="btn-close"
+            :class="compCloseButton"
             data-bs-dismiss="modal"
             aria-label="Close"
           ></button>
@@ -34,6 +35,9 @@ export default {
         return ["bg-light", "text-dark"].join(" ");
       }
       return ["bg-dark", "text-light"].join(" ");
+    },
+    compCloseButton() {
+      return this.theme === "light" ? "" : "btn-close-white";
     },
   },
 };

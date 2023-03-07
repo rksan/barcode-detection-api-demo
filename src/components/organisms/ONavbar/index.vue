@@ -13,7 +13,9 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <a class="navbar-brand" href="#"><h5>Barcode Reader Demo</h5></a>
+      <a class="navbar-brand text-truncate" style="max-width: 50%" href="/">
+        Barcode Reader Demo
+      </a>
 
       <div class="collapse navbar-collapse" id="navbarHead">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
