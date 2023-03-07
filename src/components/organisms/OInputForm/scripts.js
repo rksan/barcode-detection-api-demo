@@ -13,6 +13,9 @@ export default {
   },
 
   computed: {
+    compCameraFull() {
+      return this.camera ? ["camera-full"].join(" ") : "";
+    },
     compTheme() {
       if (this.theme === "light") {
         return ["bg-light", "text-dark"].join(" ");
@@ -43,7 +46,7 @@ export default {
         dspResult: "",
       },
       anime: false,
-      observer: null,
+      camera: false,
       videoInfo: "",
     };
   },
@@ -53,6 +56,8 @@ export default {
       log: "#my-log",
       // config,
       Quagga: null,
+
+      observer: null,
       codeChecker: {
         codes: [],
         count: 0,
@@ -93,11 +98,12 @@ export default {
             return;
           }
 
-          this.console("Initialization finished. Ready to start");
+          //this.console("Initialization finished. Ready to start");
           this.Quagga.start();
         });
 
         this.initOvserver();
+        this.camera = true;
       },
 
       term() {
@@ -106,6 +112,7 @@ export default {
         this.Quagga.stop();
 
         this.termObserver();
+        this.camera = false;
       },
 
       isSameCode(result) {
@@ -248,7 +255,7 @@ export default {
 
     doProcessed(result) {
       if (result) {
-        this.console("[Processed]", result);
+        //this.console("[Processed]", result);
 
         const drawingCtx = this.Quagga.canvas.ctx.overlay;
         const drawingCanvas = this.Quagga.canvas.dom.overlay;
@@ -299,7 +306,7 @@ export default {
     doDetected(result) {
       if (result) {
         if (result.codeResult) {
-          console.log("[Detected]", result);
+          //console.log("[Detected]", result);
           if (this.isSameCode(result)) {
             const code = result.codeResult.code;
 

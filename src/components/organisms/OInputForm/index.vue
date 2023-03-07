@@ -7,18 +7,22 @@ export default scripts;
   <div class="wapper grid-container">
     <section class="header grid-item-head">
       <p>Start をクリック後、ブラウザにカメラの使用を許可してください。</p>
-      <button class="btn btn-primary" @click="doStart">
-        <i class="bi bi-upc-scan"></i> Start
-      </button>
-
-      <button class="btn btn-danger" @click="doStop">
-        <i class="bi bi-stop-circle-fill"></i> Stop
-      </button>
     </section>
 
-    <section class="content grid-item-main" :class="compCameraTheme">
-      <div id="interactive" class="viewport">
-        <span>{{ videoInfo }}</span>
+    <section class="content grid-item-main">
+      <div class="camera" :class="[compCameraTheme, compCameraFull].join(' ')">
+        <div id="interactive" class="viewport">
+          <span>{{ videoInfo }}</span>
+        </div>
+        <div class="fixed-bottom">
+          <button class="btn btn-primary" @click="doStart">
+            <i class="bi bi-upc-scan"></i> Start
+          </button>
+
+          <button class="btn btn-danger" @click="doStop">
+            <i class="bi bi-stop-circle-fill"></i> Stop
+          </button>
+        </div>
       </div>
     </section>
   </div>
@@ -229,7 +233,15 @@ export default scripts;
   opacity: 75%;
   padding: 0.5em;
 }
-
+.camera {
+  width: 100%;
+  height: 100%;
+}
+.camera-full {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 .camera-demo-light {
   background-image: radial-gradient(circle, #000 1px, rgba(0, 0, 0, 0) 1px);
   background-size: 1rem 1rem;
