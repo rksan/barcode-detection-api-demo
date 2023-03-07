@@ -17,7 +17,9 @@ export default scripts;
     </section>
 
     <section class="content grid-item-main" :class="compCameraTheme">
-      <div id="interactive" class="viewport"></div>
+      <div id="interactive" class="viewport">
+        <span>{{ videoInfo }}</span>
+      </div>
     </section>
   </div>
 
@@ -256,6 +258,15 @@ export default scripts;
     width: calc(100vw - calc(100vw - 100%));
     height: auto;
   }
+}
+
+.viewport > span {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  background-color: #000;
+  opacity: 70%;
 }
 
 .viewport > video,

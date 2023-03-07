@@ -43,6 +43,8 @@ export default {
         dspResult: "",
       },
       anime: false,
+      observer: null,
+      videoInfo: "",
     };
   },
 
@@ -94,12 +96,16 @@ export default {
           this.console("Initialization finished. Ready to start");
           this.Quagga.start();
         });
+
+        this.initOvserver();
       },
 
       term() {
         this.Quagga.offProcessed(this.doProcessed);
         this.Quagga.offDetected(this.doDetected);
         this.Quagga.stop();
+
+        this.termObserver();
       },
 
       isSameCode(result) {
@@ -156,6 +162,63 @@ export default {
   },
 
   methods: {
+    initOvserver() {
+      const target = document.querySelector(".viewport");
+
+      const observer = new ResizeObserver(this.doOvserver);
+
+      observer.observe(target);
+
+      this.observer = observer;
+
+      //console.log("[initOvserver]");
+    },
+
+    termObserver() {
+      this.observer.disconnect();
+      //console.log("[termObserver]");
+    },
+
+    doOvserver(mutations /* observer */) {
+      //console.log("[doOvserver]");
+      // Use traditional 'for loops' for IE 11
+      mutations.forEach((mutation) => {
+        //console.log("[mutation]", mutation);
+        //console.log("[observer]", observer);
+        /* if (mutation.type === "attributes") {
+        } */
+        const target = mutation.target;
+        const rect = mutation.contentRect;
+
+        const video = target.getElementsByTagName("video")[0];
+        const vdr = video
+          ? video.getBoundingClientRect()
+          : { width: "", height: "" };
+
+        const canvas = target.getElementsByTagName("canvas")[0];
+        const cvr = canvas
+          ? canvas.getBoundingClientRect()
+          : { width: "", height: "" };
+
+        const bdr = document.body.getBoundingClientRect();
+
+        this.videoInfo = [
+          {
+            body: `${Math.floor(bdr.width)} * ${Math.floor(bdr.height)}`,
+          },
+          {
+            view: `${Math.floor(rect.width)} * ${Math.floor(rect.height)}`,
+          },
+          {
+            video: `${Math.floor(vdr.width)} * ${Math.floor(vdr.height)}`,
+          },
+          {
+            canvas: `${Math.floor(cvr.width)} * ${Math.floor(cvr.height)}`,
+          },
+        ];
+      });
+    },
+
     resetGallary() {
       this.model.gallery = [];
     },

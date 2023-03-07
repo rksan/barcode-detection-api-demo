@@ -22,13 +22,13 @@
           </li>
         </ul>
 
-        <button
+        <a
           class="btn btn-dark"
           href="https://github.com/rksan/barcode-detection-api-demo"
           target="_blank"
         >
           <i class="bi bi-github"></i> github
-        </button>
+        </a>
       </div>
 
       <div class="dropdown">
