@@ -5,10 +5,6 @@ export default scripts;
 
 <template>
   <div class="wapper grid-container">
-    <section class="header grid-item-head">
-      <p>Start をクリック後、ブラウザにカメラの使用を許可してください。</p>
-    </section>
-
     <section class="content grid-item-main">
       <div class="camera" :class="[compCameraTheme, compCameraFull].join(' ')">
         <div id="interactive" class="viewport" :class="compViewportShow">

@@ -1,4 +1,5 @@
-import config from "./config";
+//import config from "./config";
+import { useQuaggaConfigStore } from "@/store/quagga-config";
 
 export default {
   name: "o-input-form",
@@ -10,6 +11,12 @@ export default {
         return "light";
       },
     },
+
+    start: { type: Function, default: () => {} },
+
+    scan: { type: Function, default: () => {} },
+
+    stop: { type: Function, default: () => {} },
   },
 
   computed: {
@@ -54,7 +61,29 @@ export default {
     };
   },
 
+  created() {
+    this.resetGallary();
+
+    this.$watch(
+      () => this.quaggaConfigStore.getEvents(),
+      (events) => {
+        // console.log("INFO", "update");
+        if (events === "update") {
+          if (this.camera) {
+            this.doStop();
+            this.doStart();
+          }
+          this.quaggaConfigStore.setEvents("");
+        }
+      }
+    );
+  },
+
   setup() {
+    const store = {
+      quaggaConfigStore: useQuaggaConfigStore(),
+    };
+
     const data = {
       log: "#my-log",
       // config,
@@ -70,6 +99,8 @@ export default {
     };
 
     return {
+      ...store,
+
       ...data,
 
       console(type, msg) {
@@ -94,7 +125,10 @@ export default {
         this.Quagga.onProcessed(this.doProcessed);
         this.Quagga.onDetected(this.doDetected);
 
-        this.Quagga.init(config, (err) => {
+        const quaggaConfig = this.quaggaConfigStore.getConfig();
+        //const quaggaConfig = require("./config");
+
+        this.Quagga.init(quaggaConfig, (err) => {
           if (err) {
             this.console(err);
 
@@ -165,10 +199,6 @@ export default {
         this.codeChecker.errors = [];
       },
     };
-  },
-
-  created() {
-    this.resetGallary();
   },
 
   methods: {
@@ -248,12 +278,18 @@ export default {
       this.model.dspResult = JSON.stringify(result);
     },
 
-    doStop() {
-      this.term();
-    },
-
     doStart() {
       this.init();
+      this.start("start", { data: this.model, vm: this });
+    },
+
+    doScan() {
+      this.scan("scan", { data: this.model, vm: this });
+    },
+
+    doStop() {
+      this.term();
+      this.stop("stop", { data: this.model, vm: this });
     },
 
     doProcessed(result) {
@@ -327,6 +363,7 @@ export default {
               checker: this.getCodeChecker(),
             });
 
+            this.doScan();
             this.doStop();
             this.resetCodeChecker();
             this.anime = true;

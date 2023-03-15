@@ -50,6 +50,17 @@
           <li>
             <button
               class="dropdown-item"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#settings-sidebar"
+              aria-controls="settings-sidebar"
+              @click="onSettings"
+            >
+              Settings
+            </button>
+          </li>
+          <li>
+            <button
+              class="dropdown-item"
               data-bs-toggle="modal"
               data-bs-target="#supported-constraints-dialog"
               @click="onSC"
@@ -72,6 +83,11 @@
       </div>
     </div>
   </nav>
+
+  <OSidebar id="settings-sidebar" :theme="theme" class="offcanvas-end">
+    <template #header><h1>Settings</h1></template>
+    <OSettings />
+  </OSidebar>
 
   <OModalDialog
     id="supported-constraints-dialog"
@@ -102,10 +118,12 @@
 
 <script>
 import OModalDialog from "@/components/organisms/OModalDialog";
+import OSettings from "@/components/organisms/OSettings";
+
 export default {
   name: "o-navbar",
 
-  components: { OModalDialog },
+  components: { OModalDialog, OSettings },
 
   props: {
     theme: {

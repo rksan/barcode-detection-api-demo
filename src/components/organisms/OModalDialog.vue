@@ -1,15 +1,16 @@
 <template>
   <div :id="id" class="modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content" :class="compTheme">
         <div class="modal-header">
           <h5 class="modal-title">{{ title }}</h5>
+          <slot name="header" />
           <button
             class="btn-close"
             :class="compCloseButton"
             data-bs-dismiss="modal"
             aria-label="Close"
-          ></button>
+          />
         </div>
         <div class="modal-body" :class="compTheme">
           <slot />
@@ -27,6 +28,18 @@ export default {
     id: { type: String, default: () => "modal-dialog" },
     title: { type: String, default: () => "Modal Dialog" },
     theme: { type: String, default: () => "light" },
+    btnSave: {
+      type: Object,
+      default: () => {
+        return { label: "Save", click: () => {} };
+      },
+    },
+    btnCancel: {
+      type: Object,
+      default: () => {
+        return { label: "Cancel", click: () => {} };
+      },
+    },
   },
 
   computed: {

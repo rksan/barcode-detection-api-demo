@@ -1,16 +1,22 @@
 <template>
-  <PHome theme="dark" />
+  <PAsyncPermissionMedia theme="dark">
+    <PHome theme="dark" />
+  </PAsyncPermissionMedia>
 </template>
 
 <script>
 import PHome from "@/components/pages/Home";
+import PAsyncPermissionMedia from "@/components/pages/AsyncPermissionMedia";
+import { defineComponent } from "vue";
 
-export default {
+export default defineComponent({
   name: "App",
+
   components: {
+    PAsyncPermissionMedia,
     PHome,
   },
-};
+});
 </script>
 
 <style>
