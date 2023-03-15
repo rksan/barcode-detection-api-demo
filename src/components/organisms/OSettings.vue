@@ -110,7 +110,7 @@ import {
 } from "@/store/quagga-config";
 
 export default {
-  name: "o-async-settings",
+  name: "o-settings",
 
   methods: {
     doClickOk() {
