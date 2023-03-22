@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { QUAGGA_DEFAULT_CONFIGS } from "@/store/quagga-config";
+import USER_MEDIA from "@/lib/user-media";
 
 export default {
   name: "p-async-permission-media",
@@ -104,7 +104,7 @@ export default {
 
   methods: {
     async asyncPermissionToUseUserMedia(constraints) {
-      return QUAGGA_DEFAULT_CONFIGS.asyncPermissionToUseUserMedia(constraints)
+      return USER_MEDIA.asyncPermissionToUseUserMedia(constraints)
         .then((permission) => {
           if (permission instanceof Error) {
             return Promise.reject(permission);

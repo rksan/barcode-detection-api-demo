@@ -107,6 +107,7 @@
 import {
   useQuaggaConfigStore,
   QUAGGA_DEFAULT_CONFIGS,
+  USER_MEDIA,
 } from "@/store/quagga-config";
 
 export default {
@@ -124,7 +125,7 @@ export default {
   data() {
     return {
       model: {
-        deviceId: this.quaggaConfigStore.cameras.deviceId,
+        deviceId: "",
         ratio: "16x9",
         readers: this.quaggaConfigStore.readers,
         numOfWorkers: this.quaggaConfigStore.numOfWorkers,
@@ -141,7 +142,7 @@ export default {
       quaggaConfigStore: useQuaggaConfigStore(),
     };
 
-    const devices = QUAGGA_DEFAULT_CONFIGS.devices();
+    const devices = USER_MEDIA.devices();
 
     const data = {
       READERS_OPTIONS: QUAGGA_DEFAULT_CONFIGS.readers("values").map(
@@ -155,7 +156,7 @@ export default {
 
       DEVICES: devices,
 
-      CAMERAS_OPTIONS: QUAGGA_DEFAULT_CONFIGS.cameras().map((device) => ({
+      CAMERAS_OPTIONS: USER_MEDIA.cameras().map((device) => ({
         text: device.label,
         value: device.deviceId,
       })),

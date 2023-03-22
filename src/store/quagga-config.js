@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 // import merge from "lodash.merge";
+import USER_MEDIA from "@/lib/user-media";
 
 const getProperty = (config, name) => {
   if (config && name) {
@@ -10,111 +11,6 @@ const getProperty = (config, name) => {
 };
 
 const QUAGGA_DEFAULT_CONFIGS = {
-  /**
-   *
-   * @param {MediaStreamConstraints} constraints
-   * @returns {Promise<MediaStream | DOMException>}
-   */
-  asyncUserMedias: async (constraints) => {
-    return await navigator.mediaDevices.getUserMedia(constraints);
-  },
-
-  _permissions: {
-    video: false,
-    audio: false,
-  },
-
-  _devices: [],
-
-  devices() {
-    const config = QUAGGA_DEFAULT_CONFIGS._devices;
-
-    return config;
-  },
-
-  _cameras: [],
-
-  cameras(name) {
-    if (QUAGGA_DEFAULT_CONFIGS._permissions.video) {
-      const config = QUAGGA_DEFAULT_CONFIGS._cameras;
-
-      if (name === "default") {
-        return config[0];
-      }
-
-      return config;
-    }
-    return [];
-  },
-
-  _microphones: [],
-
-  microphones(name) {
-    if (QUAGGA_DEFAULT_CONFIGS._permissions.audio) {
-      const config = QUAGGA_DEFAULT_CONFIGS._microphones;
-
-      if (name === "default") {
-        return config[0];
-      }
-
-      return config;
-    }
-
-    return [];
-  },
-
-  /**
-   *
-   * @param {MediaStreamConstraints} constraints
-   * @returns {Promise<InputDeviceInfo[]> | Promise<DOMException>}
-   */
-  asyncPermissionToUseUserMedia: async (constraints) => {
-    try {
-      const media = await QUAGGA_DEFAULT_CONFIGS.asyncUserMedias(constraints);
-
-      QUAGGA_DEFAULT_CONFIGS._permissions.audio = true;
-
-      const videos = media.getVideoTracks();
-      if (0 < videos.length) {
-        QUAGGA_DEFAULT_CONFIGS._permissions.video = true;
-        videos.forEach((video) => video.stop());
-      }
-
-      const audios = media.getAudioTracks();
-      if (0 < audios.length) {
-        QUAGGA_DEFAULT_CONFIGS._permissions.audio = true;
-        audios.forEach((audio) => audio.stop());
-      }
-
-      const devices = await QUAGGA_DEFAULT_CONFIGS.asyncDevices();
-
-      QUAGGA_DEFAULT_CONFIGS._devices = devices;
-
-      QUAGGA_DEFAULT_CONFIGS._cameras = devices.filter(
-        (device) => device.kind === "videoinput" && device.label !== ""
-      );
-
-      QUAGGA_DEFAULT_CONFIGS._microphones = devices.filter(
-        (device) => device.kind === "audioinput" && device.label !== ""
-      );
-
-      return Promise.resolve(devices);
-    } catch (err) {
-      QUAGGA_DEFAULT_CONFIGS._permissions.video = false;
-      QUAGGA_DEFAULT_CONFIGS._permissions.audio = false;
-
-      return Promise.reject(err);
-    }
-  },
-
-  /**
-   *
-   * @returns {Promise<Array>} devices
-   */
-  asyncDevices: async () => {
-    return await navigator.mediaDevices.enumerateDevices();
-  },
-
   width: (name) => {
     const config = {
       default: {
@@ -145,7 +41,7 @@ const QUAGGA_DEFAULT_CONFIGS = {
    * */
   readers: (name) => {
     const config = {
-      default: ["ean_reader"],
+      default: ["ean_reader", "ean_8_reader"],
       values: [
         "code_128_reader",
         "ean_reader",
@@ -187,8 +83,6 @@ const QUAGGA_DEFAULT_CONFIGS = {
 
 const useQuaggaConfigStore = defineStore("quagga-config", {
   state: () => ({
-    deviceId: QUAGGA_DEFAULT_CONFIGS.cameras("default").deviceId,
-    cameras: QUAGGA_DEFAULT_CONFIGS.cameras("default"),
     readers: QUAGGA_DEFAULT_CONFIGS.readers("default"),
     numOfWorkers: QUAGGA_DEFAULT_CONFIGS.numOfWorkers("default"),
     singleChannel: QUAGGA_DEFAULT_CONFIGS.singleChannel("default"),
@@ -213,7 +107,7 @@ const useQuaggaConfigStore = defineStore("quagga-config", {
               width: state.width,
               height: state.height,
               facingMode: "environment",
-              deviceId: state.deviceId,
+              // deviceId: state.deviceId,
             },
 
             /*
@@ -294,4 +188,4 @@ const useQuaggaConfigStore = defineStore("quagga-config", {
   },
 });
 
-export { useQuaggaConfigStore, QUAGGA_DEFAULT_CONFIGS };
+export { useQuaggaConfigStore, QUAGGA_DEFAULT_CONFIGS, USER_MEDIA };
