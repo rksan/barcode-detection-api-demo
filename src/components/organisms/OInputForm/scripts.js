@@ -1,5 +1,5 @@
-//import config from "./config";
 import { useQuaggaConfigStore } from "@/store/quagga-config";
+import { verifier, methods } from "@/lib/verifier";
 
 export default {
   name: "o-input-form",
@@ -90,12 +90,12 @@ export default {
       Quagga: null,
 
       observer: null,
-      codeChecker: {
+      /* codeChecker: {
         codes: [],
         count: 0,
         error: 0,
         errors: [],
-      },
+      }, */
     };
 
     return {
@@ -120,6 +120,8 @@ export default {
 
       init() {
         this.codes = [];
+        this.checker.reset();
+        this.modulus.reset();
 
         this.Quagga = require("quagga");
         this.Quagga.onProcessed(this.doProcessed);
@@ -152,7 +154,11 @@ export default {
         this.camera = false;
       },
 
-      isSameCode(result) {
+      checker: verifier(methods.continuity, { count: 4 }),
+
+      modulus: verifier(methods.modulus10, { base: 10, weight: 3, digit: 10 }),
+
+      /* isSameCode(result) {
         const codes = this.codeCheckCode(result.codeResult.code);
 
         if (codes.length < 5) {
@@ -197,7 +203,7 @@ export default {
         this.codeChecker.count = 0;
         this.codeChecker.error = 0;
         this.codeChecker.errors = [];
-      },
+      }, */
     };
   },
 
@@ -343,33 +349,39 @@ export default {
     },
 
     doDetected(result) {
-      if (result) {
-        if (result.codeResult) {
-          //console.log("[Detected]", result);
-          if (this.isSameCode(result)) {
-            const code = result.codeResult.code;
-
-            const canvas = this.Quagga.canvas.dom.image;
-
-            /* this.model.code = code;
-            this.model.imageURL = canvas.toDataURL(); */
-
-            this.model.imageURL = canvas.toDataURL();
-
-            this.addGallary({
-              code: code,
-              imageURL: this.model.imageURL,
-              result,
-              checker: this.getCodeChecker(),
-            });
-
-            this.doScan();
-            this.doStop();
-            this.resetCodeChecker();
-            this.anime = true;
-          }
-        }
+      if (!result) {
+        return;
       }
+
+      if (!result.codeResult) {
+        return;
+      }
+
+      const code = result.codeResult.code;
+
+      if (!this.modulus.verify(code)) {
+        return;
+      }
+
+      if (!this.checker.verify(code)) {
+        return;
+      }
+
+      const canvas = this.Quagga.canvas.dom.image;
+
+      this.model.imageURL = canvas.toDataURL();
+
+      this.addGallary({
+        code: code,
+        imageURL: this.model.imageURL,
+        result,
+        checker: this.checker,
+      });
+
+      this.doScan();
+      this.doStop();
+
+      this.anime = true;
     },
   },
 };
