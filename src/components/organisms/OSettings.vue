@@ -12,23 +12,53 @@
     </div>
 
     <div>
-      <label class="form-label" for="input-workers">Workers(0 - 8)</label>
-      <div class="row">
-        <div class="col-8">
-          <b-progress :min="WORKERS_RANGE.min" :max="WORKERS_RANGE.max">
-            <b-progress-bar :value="model.numOfWorkers">
-              <span>{{ `${model.numOfWorkers} / ${WORKERS_RANGE.max}` }}</span>
-            </b-progress-bar>
-          </b-progress>
-        </div>
-        <div class="col-1">
-          <b-form-spin-button
+      <label class="form-label" for="input-workers">Workers</label>
+
+      <div class="d-flex">
+        <div class="align-self-stretch flex-fill w-100 text-center">
+          <span>{{ `${model.numOfWorkers}/${WORKERS_RANGE.max}` }}</span>
+          <input
+            class="w-100 text-light"
+            type="range"
             id="input-workers"
-            v-model="model.numOfWorkers"
+            list="input-workers-list"
             :min="WORKERS_RANGE.min"
             :max="WORKERS_RANGE.max"
-            inline
+            v-model="model.numOfWorkers"
           />
+          <datalist id="input-workers-list">
+            <option value="0" label="0"></option>
+            <option
+              v-for="n in WORKERS_RANGE.max"
+              :key="n"
+              :value="n"
+              :label="n"
+            ></option>
+          </datalist>
+        </div>
+        <div class="order-first">
+          <b-button
+            variant="primary"
+            @click="
+              WORKERS_RANGE.min < model.numOfWorkers
+                ? --model.numOfWorkers
+                : false
+            "
+          >
+            <i class="bi bi-arrow-left"></i>
+          </b-button>
+        </div>
+        <div class="order-last">
+          <b-button
+            variant="primary"
+            @click="
+              model.numOfWorkers < WORKERS_RANGE.max
+                ? ++model.numOfWorkers
+                : false
+            "
+          >
+            <i class="bi bi-arrow-right"> </i>
+          </b-button>
         </div>
       </div>
     </div>
@@ -64,6 +94,7 @@
             :min="WIDTH.min"
             :max="WIDTH.max"
             step="10"
+            disabled
           />
         </div>
         <div class="col">
@@ -74,6 +105,7 @@
             :min="HEIGHT.min"
             :max="HEIGHT.max"
             step="10"
+            disabled
           />
         </div>
       </div>

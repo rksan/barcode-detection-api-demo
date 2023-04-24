@@ -90,12 +90,6 @@ export default {
       Quagga: null,
 
       observer: null,
-      /* codeChecker: {
-        codes: [],
-        count: 0,
-        error: 0,
-        errors: [],
-      }, */
     };
 
     return {
@@ -157,53 +151,6 @@ export default {
       checker: verifier(methods.continuity, { count: 4 }),
 
       modulus: verifier(methods.modulus10, { base: 10, weight: 3, digit: 10 }),
-
-      /* isSameCode(result) {
-        const codes = this.codeCheckCode(result.codeResult.code);
-
-        if (codes.length < 5) {
-          return false;
-        }
-
-        const checked = codes.every((v) => v === codes[0]);
-
-        this.codeCheckCount();
-
-        if (!checked) {
-          this.codeCheckError();
-          //this.codeChecker.codes.shift();
-        }
-
-        return checked;
-      },
-
-      getCodeChecker() {
-        return Object.assign({}, this.codeChecker);
-      },
-
-      codeCheckCode(code) {
-        if (code) {
-          this.codeChecker.codes.push(code);
-        }
-
-        return this.codeChecker.codes;
-      },
-
-      codeCheckCount() {
-        return ++this.codeChecker.count;
-      },
-
-      codeCheckError() {
-        this.codeChecker.errors.push(this.codeChecker.codes.shift());
-        return ++this.codeChecker.error;
-      },
-
-      resetCodeChecker() {
-        this.codeChecker.codes = [];
-        this.codeChecker.count = 0;
-        this.codeChecker.error = 0;
-        this.codeChecker.errors = [];
-      }, */
     };
   },
 
