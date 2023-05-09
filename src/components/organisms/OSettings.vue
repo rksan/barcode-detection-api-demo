@@ -6,29 +6,61 @@
         <b-form-checkbox-group
           id="input-readers"
           v-model="model.readers"
-          :options="READERS_OPTIONS"
+          :options="OPTIONS.READERS"
         />
       </div>
     </div>
 
     <div>
-      <label class="form-label" for="input-workers">Workers(0 - 8)</label>
-      <div class="row">
-        <div class="col-8">
-          <b-progress :min="WORKERS_RANGE.min" :max="WORKERS_RANGE.max">
-            <b-progress-bar :value="model.numOfWorkers">
-              <span>{{ `${model.numOfWorkers} / ${WORKERS_RANGE.max}` }}</span>
-            </b-progress-bar>
-          </b-progress>
-        </div>
-        <div class="col-1">
-          <b-form-spin-button
+      <label class="form-label" for="input-workers">Workers</label>
+
+      <div class="d-flex">
+        <div class="align-self-stretch flex-fill w-100 text-center">
+          <span>{{
+            `${model.numOfWorkers}/${OPTIONS.WORKERS_RANGE.max}`
+          }}</span>
+          <input
+            class="w-100 text-light"
+            type="range"
             id="input-workers"
+            list="input-workers-list"
+            :min="OPTIONS.WORKERS_RANGE.min"
+            :max="OPTIONS.WORKERS_RANGE.max"
             v-model="model.numOfWorkers"
-            :min="WORKERS_RANGE.min"
-            :max="WORKERS_RANGE.max"
-            inline
           />
+          <datalist id="input-workers-list">
+            <option value="0" label="0"></option>
+            <option
+              v-for="n in OPTIONS.WORKERS_RANGE.max"
+              :key="n"
+              :value="n"
+              :label="n"
+            ></option>
+          </datalist>
+        </div>
+        <div class="order-first">
+          <b-button
+            variant="primary"
+            @click="
+              OPTIONS.WORKERS_RANGE.min < model.numOfWorkers
+                ? --model.numOfWorkers
+                : false
+            "
+          >
+            <i class="bi bi-arrow-left"></i>
+          </b-button>
+        </div>
+        <div class="order-last">
+          <b-button
+            variant="primary"
+            @click="
+              model.numOfWorkers < OPTIONS.WORKERS_RANGE.max
+                ? ++model.numOfWorkers
+                : false
+            "
+          >
+            <i class="bi bi-arrow-right"> </i>
+          </b-button>
         </div>
       </div>
     </div>
@@ -38,7 +70,7 @@
       <b-form-select
         id="input-camera"
         v-model="model.deviceId"
-        :options="CAMERAS_OPTIONS"
+        :options="OPTIONS.CAMERAS"
       ></b-form-select>
     </div>
 
@@ -50,31 +82,49 @@
           <label class="form-label">Ratio</label>
           <b-form-select
             id="input-ratio"
-            v-model="model.ratio"
-            :options="RADIO_OPTIONS"
-            disabled
+            v-model="material.ratio"
+            @input="emitInputRatio"
           >
+            <b-form-select-option
+              v-for="(opt, idx) in OPTIONS.RATIO"
+              :key="idx"
+              :value="String(opt.value)"
+            >
+              {{ opt.text }}
+            </b-form-select-option>
           </b-form-select>
         </div>
         <div class="col">
-          <label class="form-label">width</label>
-          <b-form-input
+          <label class="form-label" for="input-width">width</label>
+          <input
+            id="input-width"
+            class="form-control"
             type="number"
-            v-model="model.width"
-            :min="WIDTH.min"
-            :max="WIDTH.max"
+            v-model="model.width.ideal"
+            :min="model.width.min"
+            :max="model.width.max"
             step="10"
+            @input="doInputWidth"
           />
         </div>
         <div class="col">
-          <label class="form-label">height</label>
-          <b-form-input
+          <label class="form-label" for="input-height">height</label>
+          <input
+            id="input-height"
+            class="form-control"
             type="number"
-            v-model="model.height"
-            :min="HEIGHT.min"
-            :max="HEIGHT.max"
+            v-model="model.height.ideal"
+            number
+            :min="model.height.min"
+            :max="model.height.max"
             step="10"
+            @input="doInputHeight"
           />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <b-button @click="doClickFitSize">fix body</b-button>
         </div>
       </div>
     </fieldset>
@@ -103,85 +153,166 @@
   </section>
 </template>
 
-<script>
+<script setup>
+import { reactive } from "vue";
+
 import {
   useQuaggaConfigStore,
   QUAGGA_DEFAULT_CONFIGS,
   USER_MEDIA,
 } from "@/store/quagga-config";
 
+// store
+const quaggaConfigStore = useQuaggaConfigStore();
+
+// data
+const model = reactive({
+  deviceId: "",
+  readers: quaggaConfigStore.readers,
+  numOfWorkers: quaggaConfigStore.numOfWorkers,
+  width: {
+    min: quaggaConfigStore.width.min,
+    ideal: quaggaConfigStore.width.ideal,
+    max: quaggaConfigStore.width.max,
+  },
+  height: {
+    min: quaggaConfigStore.height.min,
+    ideal: quaggaConfigStore.height.ideal,
+    max: quaggaConfigStore.height.max,
+  },
+  singleChannel: quaggaConfigStore.singleChannel,
+});
+
+const OPTIONS = (() => {
+  const devices = USER_MEDIA.devices();
+
+  return {
+    READERS: QUAGGA_DEFAULT_CONFIGS.readers("values").map((value) => ({
+      text: value,
+      value: value,
+    })),
+
+    WORKERS_RANGE: QUAGGA_DEFAULT_CONFIGS.numOfWorkers("range"),
+
+    DEVICES: devices,
+
+    CAMERAS: USER_MEDIA.cameras().map((device) => ({
+      text: device.label,
+      value: device.deviceId,
+    })),
+
+    RATIO: [
+      {
+        text: "21x9",
+        value: 9 / 21,
+      },
+      { text: "16x9", value: 9 / 16, default: true },
+      { text: "4x3", value: 3 / 4 },
+      { text: "1x1", value: 1 },
+    ].map((ratio) => ({
+      text: ratio.text,
+      value: ratio.value,
+      default: ratio.default || false,
+    })),
+
+    WIDTH: {
+      min: QUAGGA_DEFAULT_CONFIGS.width("default").min,
+      max: QUAGGA_DEFAULT_CONFIGS.width("default").max,
+    },
+
+    HEIGHT: {
+      min: QUAGGA_DEFAULT_CONFIGS.height("default").min,
+      max: QUAGGA_DEFAULT_CONFIGS.height("default").max,
+    },
+  };
+})();
+
+const material = reactive({
+  ratio: String(OPTIONS.RATIO.filter((opt) => opt.default === true)[0].value),
+});
+
+// method
+/**
+ * @param {Event} event
+ */
+const _defaultEventCancel = (event) => {
+  if (event) event.preventDefault();
+};
+
+const _forceRange = ({ width, height }) => {
+  if (width < OPTIONS.WIDTH.min) {
+    width = OPTIONS.WIDTH.min;
+  } else if (OPTIONS.WIDTH.max < width) {
+    width = OPTIONS.WIDTH.max;
+  }
+
+  if (height < OPTIONS.HEIGHT.min) {
+    height = OPTIONS.HEIGHT.min;
+  } else if (OPTIONS.HEIGHT.max < height) {
+    height = OPTIONS.HEIGHT.max;
+  }
+
+  return { width, height };
+};
+
+const emitInputRatio = (value) => {
+  let height = Math.floor(
+    Number.parseFloat(model.width.ideal) * Number.parseFloat(value)
+  );
+
+  const box = _forceRange({ width: value, height });
+
+  model.width.ideal = box.width;
+  model.height.ideal = box.height;
+};
+
+const doInputWidth = (event) => {
+  let value = event.target.value;
+  let height = Math.floor(
+    Number.parseFloat(value) * Number.parseFloat(material.ratio)
+  );
+
+  const box = _forceRange({ width: value, height });
+
+  model.width.ideal = box.width;
+  model.height.ideal = box.height;
+};
+
+const doInputHeight = (event) => {
+  let value = event.target.value;
+  let width = Math.floor(
+    Number.parseFloat(value) / Number.parseFloat(material.ratio)
+  );
+
+  const box = _forceRange({ width, height: value });
+
+  model.width.ideal = box.width;
+  model.height.ideal = box.height;
+};
+
+const doClickFitSize = () => {
+  const body = document.body;
+  const rect = body.getBoundingClientRect();
+
+  const box = _forceRange({ width: rect.width, height: rect.height });
+
+  model.width.ideal = box.width;
+  model.height.ideal = box.height;
+};
+
+const doClickOk = (event) => {
+  _defaultEventCancel(event);
+
+  Object.entries(model).forEach(([key, value]) => {
+    quaggaConfigStore.setConfig(key, value);
+  });
+  quaggaConfigStore.setEvents("update");
+};
+</script>
+
+<script>
 export default {
   name: "o-settings",
-
-  methods: {
-    doClickOk() {
-      Object.entries(this.model).forEach(([key, value]) => {
-        this.quaggaConfigStore.setConfig(key, value);
-      });
-      this.quaggaConfigStore.setEvents("update");
-    },
-  },
-
-  data() {
-    return {
-      model: {
-        deviceId: "",
-        ratio: "16x9",
-        readers: this.quaggaConfigStore.readers,
-        numOfWorkers: this.quaggaConfigStore.numOfWorkers,
-        width: this.quaggaConfigStore.width.ideal,
-        height: this.quaggaConfigStore.height.ideal,
-        singleChannel: this.quaggaConfigStore.singleChannel,
-      },
-      message: "",
-    };
-  },
-
-  setup() {
-    const store = {
-      quaggaConfigStore: useQuaggaConfigStore(),
-    };
-
-    const devices = USER_MEDIA.devices();
-
-    const data = {
-      READERS_OPTIONS: QUAGGA_DEFAULT_CONFIGS.readers("values").map(
-        (value) => ({
-          text: value,
-          value: value,
-        })
-      ),
-
-      WORKERS_RANGE: QUAGGA_DEFAULT_CONFIGS.numOfWorkers("range"),
-
-      DEVICES: devices,
-
-      CAMERAS_OPTIONS: USER_MEDIA.cameras().map((device) => ({
-        text: device.label,
-        value: device.deviceId,
-      })),
-
-      RADIO_OPTIONS: ["21x9", "16x9", "4x3", "1x1"].map((ratio) => ({
-        text: ratio,
-        value: ratio,
-      })),
-
-      WIDTH: {
-        min: QUAGGA_DEFAULT_CONFIGS.width("default").min,
-        max: QUAGGA_DEFAULT_CONFIGS.width("default").max,
-      },
-
-      HEIGHT: {
-        min: QUAGGA_DEFAULT_CONFIGS.height("default").min,
-        max: QUAGGA_DEFAULT_CONFIGS.height("default").max,
-      },
-    };
-
-    return {
-      ...data,
-      ...store,
-    };
-  },
 };
 </script>
 

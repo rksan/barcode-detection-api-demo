@@ -1,5 +1,3 @@
-//import Continuity from "./continuity";
-
 const methods = {
   continuity: "Continuity",
   modulus10: "Modulus10",

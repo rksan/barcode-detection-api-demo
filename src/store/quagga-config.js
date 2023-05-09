@@ -14,9 +14,9 @@ const QUAGGA_DEFAULT_CONFIGS = {
   width: (name) => {
     const config = {
       default: {
-        min: 1280,
-        ideal: 1920,
-        max: 2560,
+        min: 160,
+        ideal: 1200,
+        max: 10240,
       },
     };
 
@@ -26,9 +26,9 @@ const QUAGGA_DEFAULT_CONFIGS = {
   height: (name) => {
     const config = {
       default: {
-        min: 720,
-        ideal: 1080,
-        max: 1440,
+        min: 120,
+        ideal: 720,
+        max: 4320,
       },
     };
 

@@ -1,0 +1,130 @@
+<div class="wapper grid-container">
+  <section class="content grid-item-main">
+    <div class="camera" :class="[compCameraTheme, compCameraFull].join(' ')">
+      <div id="interactive" class="viewport" :class="compViewportShow">
+        <canvas class="drawingBuffer"></canvas>
+        <canvas class="debug"></canvas>
+        <video></video>
+
+        <span>{{ videoInfo }}</span>
+      </div>
+
+      <div class="fixed-bottom">
+        <button class="btn btn-primary" @click="doStart">
+          <i class="bi bi-upc-scan"></i> Start
+        </button>
+
+        <button class="btn btn-danger" @click="doStop">
+          <i class="bi bi-stop-circle-fill"></i> Stop
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="footer w-100 position-absolute bottom-0 start-0">
+  <div class="d-flex justify-content-end p-5">
+    <div
+      class="btn-group bg-secondary dropup"
+      :class="compAnime"
+      @animationend="doAnimationEnd"
+    >
+      <button
+        type="button"
+        class="preview-button btn btn-secondary"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#previewList"
+        aria-controls="previewList"
+      >
+        <i class="bi bi-images"></i>
+      </button>
+      <button
+        type="button"
+        class="btn dropdown-toggle dropdown-toggle-split"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        <span class="visually-hidden">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-dark">
+        <li>
+          <button
+            class="dropdown-item"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#previewList"
+            aria-controls="previewList"
+          >
+            Show Preview
+          </button>
+        </li>
+        <li>
+          <button class="dropdown-item" @click="resetGallary">Reset</button>
+        </li>
+      </ul>
+
+      <span
+        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+        v-show="model.gallery.length !== 0"
+      >
+        {{ model.gallery.length }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<div
+  class="offcanvas offcanvas-end"
+  tabindex="-1"
+  id="previewList"
+  :class="compTheme"
+>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Previews</h5>
+    <button
+      type="button"
+      class="btn-close text-reset"
+      data-bs-dismiss="offcanvas"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="offcanvas-body">
+    <div
+      class="preview-list list-group list-group-flush list-group-numbered"
+      style="flex-direction: column-reverse"
+    >
+      <template v-for="(item, idx) in model.gallery" v-bind:key="idx">
+        <b-button
+          class="list-group-item list-group-item-action"
+          :class="compTheme"
+          data-bs-toggle="modal"
+          data-bs-target="#dspResult"
+          :data-result-index="idx"
+          @click="doRsult"
+        >
+          <img :src="item.imageURL" class="preview-list-img" />
+          <h5 class="preview-list-text bg-light text-dark">
+            Code {{ idx + 1 }}. : {{ item.code }}
+          </h5>
+        </b-button>
+      </template>
+    </div>
+  </div>
+</div>
+
+<div id="dspResult" class="modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content" :class="compTheme">
+      <div class="modal-header">
+        <h5 class="modal-title">Result</h5>
+        <button
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body bg-dark">
+        <code class="prettyprint linenums"> {{ model.dspResult }} </code>
+      </div>
+    </div>
+  </div>
+</div>
