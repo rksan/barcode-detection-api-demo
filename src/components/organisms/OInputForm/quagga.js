@@ -225,9 +225,15 @@ const generator = (args = {}) => {
         }
 
         console.log("[Quagga]", "init finished. Ready to start");
-        // console.log("[Quagga]", config);
 
         quagga.start();
+
+        quagga.canvas.ctx.image = quagga.canvas.dom.image.getContext("2d", {
+          willReadFrequently: true,
+        });
+        quagga.canvas.ctx.overlay = quagga.canvas.dom.overlay.getContext("2d", {
+          willReadFrequently: true,
+        });
 
         if (live) {
           const delay = (timeout) => {
